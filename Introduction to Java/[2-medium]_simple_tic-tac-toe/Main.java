@@ -11,8 +11,9 @@ public class Main {
     public static void main(String[] args) {
 
         String[][] gameState = initField();
-        renderField(gameState);
+        System.out.println("Welcome to tic-tac-toe, enter co-ordinates to choose your move, X starts! Go!\n");
 
+        renderField(gameState);
         do {
             insertOX(gameState);
             renderField(gameState);
@@ -50,7 +51,7 @@ public class Main {
             int userRow = scanner.nextInt();
             scanner.nextLine(); //consume newline
 
-            if (userCol > 3 || userRow > 3) {
+            if (userCol > 3 || userRow > 3 || userCol < 1 || userRow < 1) {
                 System.out.println("Coordinates should be from 1 to 3!");
                 continue;
             }
