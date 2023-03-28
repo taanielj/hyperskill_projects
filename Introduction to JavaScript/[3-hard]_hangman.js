@@ -13,7 +13,6 @@ function greeting() {
     console.log(`H A N G M A N`);
 }
 
-
 function mainMenu(){
     let keepPlaying = true;
     let wins = 0;

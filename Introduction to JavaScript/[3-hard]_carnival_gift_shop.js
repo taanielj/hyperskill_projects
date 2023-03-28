@@ -18,6 +18,7 @@ showGifts();
 
 let userChoice;
 let userTickets = 0;
+
 do {
     console.log(`\nWhat do you want to do?`);
     console.log(`1-Buy a gift 2-Add tickets 3-Check tickets 4-Show gifts 5-Exit the shop`);
