@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -126,7 +127,6 @@ public class Main {
         String[] animals = {camel, lion, deer, goose, bat, rabbit};
         Scanner scanner = new Scanner(System.in);
 
-        boolean exit = false;
         while (true) {
             System.out.print("Please enter the number of the habitat you would like to view: ");
             String userInput = scanner.nextLine();
@@ -136,7 +136,13 @@ public class Main {
                 System.out.println("See you later!");
                 break;
             }
-            System.out.println(animals[Integer.parseInt(userInput)]);
+            try {
+                System.out.println(animals[Integer.parseInt(userInput)-1]);
+            } catch (InputMismatchException | IndexOutOfBoundsException e) {
+                System.out.println("Invalid input. Please enter a number between 1 and 6");
+            }
+
+
         }
     }
 }
