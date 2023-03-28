@@ -139,7 +139,8 @@ public class Main {
             try {
                 System.out.println(animals[Integer.parseInt(userInput)-1]);
             } catch (InputMismatchException | IndexOutOfBoundsException e) {
-                System.out.println("Invalid input. Please enter a number between 1 and 6");
+                System.out.print("Invalid input. Please enter a number between 1 and 6, ");
+                System.out.println("or type 'exit' to close the program");
             }
 
 
