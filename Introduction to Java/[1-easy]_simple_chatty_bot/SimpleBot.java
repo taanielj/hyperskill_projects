@@ -1,5 +1,6 @@
 package bot;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class SimpleBot {
@@ -37,7 +38,18 @@ public class SimpleBot {
 
     static void count() {
         System.out.println("Now I will prove to you that I can count to any number you want.");
-        int num = scanner.nextInt();
+        long num;
+        while(true) {
+            try {
+                num = scanner.nextLong();
+                scanner.nextLine();
+                break;
+            } catch (InputMismatchException e) {
+                System.out.println("That is not a number, fool! Try again!");
+                scanner.nextLine();
+            }
+        }
+
         for (int i = 0; i <= num; i++) {
             System.out.printf("%d!\n", i);
         }
