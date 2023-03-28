@@ -1,11 +1,11 @@
-const input = require('sync-input');
+const input = require('readline-sync');
 
 greet('Bob', '2022')
 remind_name();
 guess_age();
 count();
 test();
-end();
+
 
 function greet(bot_name, birth_year) {
 	console.log("Hello! My name is " + bot_name + ".");
@@ -14,7 +14,7 @@ function greet(bot_name, birth_year) {
 
 function remind_name() {
 	console.log("Please, remind me your name.");
-	let name = input();
+	let name = input.question();
 	console.log("What a great name you have, " + name + "!");
 }
 
@@ -22,9 +22,9 @@ function guess_age() {
 	console.log("Let me guess your age.");
 	console.log("Enter remainders of dividing your age by 3, 5 and 7.");
 
-	let rem3 = Number(input());
-	let rem5 = Number(input());
-	let rem7 = Number(input());
+	let rem3 = Number(input.question());
+	let rem5 = Number(input.question());
+	let rem7 = Number(input.question());
 
 	let age = (rem3 * 70 + rem5 * 21 + rem7 * 15) % 105;
 
@@ -34,7 +34,7 @@ function guess_age() {
 function count() {
 	console.log("Now I will prove to you that I can count to any number you want.");
 
-	let number = Number(input());
+	let number = Number(input.question());
 	let current = 0;
 
 	while (current <= number) {
@@ -44,19 +44,22 @@ function count() {
 }
 
 function test() {
-  console.log(`Let's test your programming knowledge.")
+  while (true) {
+	  console.log(`Let's test your programming knowledge.")
     Why do we use methods?
     1. To repeat a statement multiple times.
     2. To decompose a program into several small subroutines.
     3. To determine the execution time of a program.
     4. To interrupt the execution of a program.`);
-  the_answer = input()
-  if (the_answer == "2") {
-    console.log("Congratulations, have a nice day!");
+	  let the_answer = input.question()
+	  if (the_answer === "2") {
+	  end();
+	  break;
   } else {
-    console.log("Please, try again.");
-  }
-  
+		console.log("Please, try again.");
+	}
+
+}
 }
 
 function end() {
