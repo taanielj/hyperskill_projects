@@ -44,22 +44,22 @@ function count() {
 }
 
 function test() {
-  while (true) {
-	  console.log(`Let's test your programming knowledge.")
+	while (true) {
+		console.log(`Let's test your programming knowledge.")
     Why do we use methods?
     1. To repeat a statement multiple times.
     2. To decompose a program into several small subroutines.
     3. To determine the execution time of a program.
     4. To interrupt the execution of a program.`);
-	  let the_answer = input.question()
-	  if (the_answer === "2") {
-	  end();
-	  break;
-  } else {
-		console.log("Please, try again.");
-	}
+		let the_answer = input.question()
+		if (the_answer === "2") {
+			end();
+			break;
+		} else {
+			console.log("Please, try again.");
+		}
 
-}
+	}
 }
 
 function end() {
