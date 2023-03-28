@@ -29,28 +29,26 @@ public class Main {
             }
         }
 
-
-
-
-
         int turn = 1;
-        while (inputOK) {
+        while (true) {
 
             System.out.printf("Turn %d:\n", turn);
             String userGuess = scanner.nextLine();
-            if (userGuess.length() > Integer.parseInt(length)) {
-                inputOK = false;
+            if (userGuess.length() != Integer.parseInt(length)) {
+                System.out.printf("Invalid guess, the code is %d characters long\n", secretCode.length());
                 continue;
             }
             int[] bullsCows = getScore(secretCode, userGuess);
             System.out.print("Grade: ");
             if (bullsCows[0] == 0 && bullsCows[1] == 0) {
                 System.out.print("None.\n");
+                turn++;
             } else if (bullsCows[0] == 0) {
                 System.out.printf("%d cow(s).\n", bullsCows[1]);
+                turn++;
             } else if (bullsCows[1] == 0) {
                 System.out.printf("%d bulls(s).\n", bullsCows[0]);
-
+                turn++;
                 if (bullsCows[0] == Integer.parseInt(length)) {
                     System.out.println("\nCongratulations! You guessed the secret code.");
                     break;
@@ -60,7 +58,7 @@ public class Main {
                 System.out.printf("%d bulls(s) and %d cow(s). ", bullsCows[0], bullsCows[1]);
 
             }
-            turn++;
+
         }
 
 
