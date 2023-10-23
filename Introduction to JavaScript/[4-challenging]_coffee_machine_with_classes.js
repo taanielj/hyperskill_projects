@@ -11,10 +11,19 @@ class CoffeeMachine {
     this.sugarLevel = 500;
   }
 
+  prompt(message) {
+    console.log(message);
+    return input();
+  }
+
+  promptNumber(message) {
+    return Number(this.prompt(message));
+  }
+
   mainMenu() {
+    let choice;
     do {
-      console.log('Write action (buy, fill, take, remaining, exit):');
-      let choice = input();
+      choice = this.prompt('Write action (buy, fill, take, remaining, exit):');
       switch (choice) {
         case 'buy':
           this.buyCoffee();
@@ -37,47 +46,76 @@ class CoffeeMachine {
   }
 
   buyCoffee() {
-    console.log(
-      '\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, 4 - custom, back - to main menu:'
-    );
-    let coffeeChoice = input();
-    console.log('How much sugar?');
-    let sugar = Number(input());
+    let coffeeChoice = this.prompt('\nWhat do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, 4 - custom, back - to main menu:');
+    let sugar = this.promptNumber('How much sugar?');
+    let size = this.cupChoice();
 
-    let size;
-    switch (coffeeChoice) {
-      case '1':
-        size = this.cupChoice();
-        let espresso = new Coffee('espresso', size, sugar);
-        this.makeCoffee(espresso);
-        break;
-      case '2':
-        size = this.cupChoice();
-        let latte = new Coffee('latte', size, sugar);
-        this.makeCoffee(latte);
-        break;
-      case '3':
-        size = this.cupChoice();
-        let cappuccino = new Coffee('cappuccino', size, sugar);
-        this.makeCoffee(cappuccino);
-        break;
-      case '4':
-        size = this.cupChoice();
-        console.log('Write how many ml of water you want to add:');
-        let water = Number(input());
-        console.log('Write how many ml of milk you want to add:');
-        let milk = Number(input());
-        console.log('Write how many grams of coffee beans you want to add:');
-        let beans = Number(input());
-        let customCoffee = new CustomCoffee(water, milk, beans);
-        let custom = new Coffee('custom', size, sugar, customCoffee);
-        this.makeCoffee(custom);
-        break;
-      case 'back':
-        break;
-      default:
-        break;
+    if (coffeeChoice === 'back') return;
+
+    let coffee;
+    if (coffeeChoice === '4') {
+      coffee = new Coffee('custom', size, sugar, new CustomCoffee(
+        this.promptNumber('Write how many ml of water you want to add:'),
+        this.promptNumber('Write how many ml of milk you want to add:'),
+        this.promptNumber('Write how many grams of coffee beans you want to add:')
+      ));
+    } else {
+      const types = ['espresso', 'latte', 'cappuccino'];
+      coffee = new Coffee(types[coffeeChoice - 1], size, sugar);
     }
+    this.makeCoffee(coffee);
+  }
+
+  cupChoice() {
+    let sizes = { 'S': 'small', 'M': 'medium', 'L': 'large' };
+    let cupSize;
+    do {
+      cupSize = this.prompt('What size? (S/M/L):').toUpperCase();
+    } while (!sizes[cupSize]);
+    return sizes[cupSize];
+  }
+
+  fillMachine() {
+    const additions = {
+      water: 'Write how many ml of water you want to add:',
+      milk: 'Write how many ml of milk you want to add:',
+      beans: 'Write how many grams of coffee beans you want to add:',
+      small: 'Write how many disposable cups you want to add (S):',
+      medium: 'Write how many disposable cups you want to add (M):',
+      large: 'Write how many disposable cups you want to add (L):'
+    };
+
+    for (let [key, message] of Object.entries(additions)) {
+      let amount = this.promptNumber(message);
+      if (['small', 'medium', 'large'].includes(key)) {
+        this.cups.find(cup => cup.size === key).amount += amount;
+      } else {
+        this.ingredients[key] += amount;
+      }
+    }
+  }
+
+  checkIngredients(ingredientsNeeded, cup, sugar) {
+    const ingredientMap = {
+      water: 'Sorry, not enough water!\n',
+      milk: 'Sorry, not enough milk!\n',
+      beans: 'Sorry, not enough beans!\n',
+      cup: `Sorry, not enough ${cup.size} cups!\n`,
+      sugar: 'Sorry, not enough sugar!\n'
+    };
+
+    for (let ingredient in ingredientMap) {
+      if (ingredient === 'cup' && cup.amount === 0) {
+        console.log(ingredientMap[ingredient]);
+        return false;
+      } else if (ingredientsNeeded[ingredient] && ingredientsNeeded[ingredient] > this.ingredients[ingredient]) {
+        console.log(ingredientMap[ingredient]);
+        return false;
+      }
+    }
+
+    console.log(`I have enough resources, making you a coffee!\n`);
+    return true;
   }
 
   makeCoffee(coffee) {
@@ -86,70 +124,6 @@ class CoffeeMachine {
     if (this.checkIngredients(ingredientsNeeded, cup, coffee.sugar)) {
       this.updateIngredients(ingredientsNeeded, cup, coffee.price);
     }
-  }
-
-  cupChoice() {
-    console.log('What size? (S/M/L):');
-    do {
-      let cupSize = input().toUpperCase();
-      switch (cupSize) {
-        case 'S':
-          return 'small';
-        case 'M':
-          return 'medium';
-        case 'L':
-          return 'large';
-        default:
-          console.log('Invalid cup choice!');
-      }
-    } while (true);
-  }
-
-	fillMachine() {
-		console.log('Write how many ml of water you want to add:');
-		let water = Number(input());
-		console.log('Write how many ml of milk you want to add:');
-		let milk = Number(input());
-		console.log('Write how many grams of coffee beans you want to add:');
-		let beans = Number(input());
-		console.log('Write how many disposable cups you want to add (S):');
-		let cupS = Number(input());
-		console.log('Write how many disposable cups you want to add (M):');
-		let cupM = Number(input());
-		console.log('Write how many disposable cups you want to add (L):');
-		let cupL = Number(input());
-
-		this.ingredients.water += water;
-		this.ingredients.milk += milk;
-		this.ingredients.beans += beans;
-		this.cups.find((cup) => cup.size === 'small').amount += cupS;
-		this.cups.find((cup) => cup.size === 'medium').amount += cupM;
-		this.cups.find((cup) => cup.size === 'large').amount += cupL;
-  }
-
-  checkIngredients(ingredientsNeeded, cup, sugar) {
-    if (ingredientsNeeded.water > this.ingredients.water) {
-      console.log('Sorry, not enough water!\n');
-      return false;
-    }
-    if (ingredientsNeeded.milk > this.ingredients.milk) {
-      console.log('Sorry, not enough milk!\n');
-      return false;
-    }
-    if (ingredientsNeeded.beans > this.ingredients.beans) {
-      console.log('Sorry, not enough beans!\n');
-      return false;
-    }
-    if (cup.amount === 0) {
-      console.log(`Sorry, not enough ${cup.size} cups!\n`);
-      return false;
-    }
-    if (sugar > this.sugarLevel) {
-      console.log('Sorry, not enough sugar!\n');
-      return false;
-    }
-    console.log(`I have enough resources, making you a coffee!\n`);
-    return true;
   }
 
   updateIngredients(ingredientsNeeded, cup, price) {
@@ -164,14 +138,14 @@ class CoffeeMachine {
   showLevels() {
     console.log(
       `\nThe coffee machine has:\n` +
-        `${this.ingredients.water.toFixed(2)} ml of water\n` +
-        `${this.ingredients.milk.toFixed(2)} ml of milk\n` +
-        `${this.ingredients.beans.toFixed(2)} g of coffee beans\n` +
-        `${this.sugarLevel.toFixed(2)} g of sugar\n` +
-        `${this.cups.find((cup) => cup.size === 'small').amount} small disposable cups\n` +
-        `${this.cups.find((cup) => cup.size === 'medium').amount} medium disposable cups\n` +
-        `${this.cups.find((cup) => cup.size === 'large').amount} large disposable cups\n` +
-        `$${this.ingredients.money.toFixed(2)} of money\n`
+      `${this.ingredients.water.toFixed(2)} ml of water\n` +
+      `${this.ingredients.milk.toFixed(2)} ml of milk\n` +
+      `${this.ingredients.beans.toFixed(2)} g of coffee beans\n` +
+      `${this.sugarLevel.toFixed(2)} g of sugar\n` +
+      `${this.cups.find((cup) => cup.size === 'small').amount} small disposable cups\n` +
+      `${this.cups.find((cup) => cup.size === 'medium').amount} medium disposable cups\n` +
+      `${this.cups.find((cup) => cup.size === 'large').amount} large disposable cups\n` +
+      `$${this.ingredients.money.toFixed(2)} of money\n`
     );
   }
 
@@ -197,38 +171,24 @@ class Cup {
   }
 }
 
-
 class Coffee {
   constructor(type, size, sugar, customCoffee = null) {
     this.type = type;
     this.size = size;
     this.sugar = sugar;
     this.customCoffee = customCoffee;
-    switch (this.type) {
-      case 'espresso':
-        this.ingredients = new Ingredients(250, 0, 16, 4);
-        this.price = 1.5;
-        break;
-      case 'latte':
-        this.ingredients = new Ingredients(350, 75, 20, 7);
-        this.price = 2.5;
-        break;
-      case 'cappuccino':
-        this.ingredients = new Ingredients(200, 100, 12, 6);
-        this.price = 3;
-        break;
-      case 'custom':
-        this.ingredients = new Ingredients(
-          this.customCoffee.water,
-          this.customCoffee.milk,
-          this.customCoffee.beans,
-          0
-        );
-        this.price = 3;
-        break;
-      default:
-        break;
-    }
+    this.setIngredients();
+  }
+
+  setIngredients() {
+    const coffeeTypes = {
+      'espresso': { ingredients: new Ingredients(250, 0, 16, 4), price: 1.5 },
+      'latte': { ingredients: new Ingredients(350, 75, 20, 7), price: 2.5 },
+      'cappuccino': { ingredients: new Ingredients(200, 100, 12, 6), price: 3 },
+      'custom': { ingredients: new Ingredients(this.customCoffee.water, this.customCoffee.milk, this.customCoffee.beans, 0), price: 3 }
+    };
+    this.ingredients = coffeeTypes[this.type].ingredients;
+    this.price = coffeeTypes[this.type].price;
   }
 
   getIngredientsNeeded() {
